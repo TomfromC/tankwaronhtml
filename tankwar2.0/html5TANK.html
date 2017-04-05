@@ -2,8 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8"></meta>
-<script src="jquery2.js"></script>
-<!-- <script src="jquery.mobile-1.1.1.js"></script> -->
+<!-- <script src="jquery-1.11.1.js"></script> -->
 <!-- <script src="html5TANK.js"></script> -->
 <link rel="stylesheet" href="html5TANK.css" />
 
@@ -11,12 +10,20 @@
 <body onkeypress="getComman()">
 <!--画布-->
 <div id="box">
-	<canvas id="can1" ></canvas>
+	<canvas id="canvas" ></canvas>
 	
 	<!--文字-->
+	<div><span>awds方向 j射击</span></div>
+	<div class="showScore">分数:</div>
 	<div id="span1"></div>
-	<div>awds方向 j发弹</div>
 </div>
+<div class="controlbutton">
+	<span id="up"></span>
+	<span id="right"></span>
+	<span id="left"></span>
+	<span id="down"></span>
+</div>
+<div class="shot"></div>
 
 <video id="sound" src="bullet.mp3"></video>
 <video id="burn" src="burn.mp3"></video>

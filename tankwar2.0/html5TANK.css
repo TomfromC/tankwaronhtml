@@ -1,7 +1,9 @@
-﻿html,body{
+﻿*{
 	margin:0px;
 	padding:0px;
 	border:0px;
+}
+html,body{
 	width:100%;
 	height:100%;
 }
@@ -9,17 +11,37 @@ video{
 	display:none;
 }
 .controlbutton{
-	wider:30px;
-	height:30px;
-	border:1px solid red;
-	background-color:green
+	width:100px;
+	height:100px;
+	position:absolute;
+	left:35px;
+	top:45%;
+	
+	transform:rotate(45deg);
+	-ms-transform:rotate(45deg); 	/* IE 9 */
+	-moz-transform:rotate(45deg); 	/* Firefox */
+	-webkit-transform:rotate(45deg); /* Safari 和 Chrome */
+	-o-transform:rotate(45deg); 	/* Opera */
+}
+.controlbutton span{
+	width:48%;
+	height:48%;
+	background-color:green;
+	border:1px solid black;
 	float:left;
 }
-#controlbox{
-	position:relative;
-	bottom:10px;
-	left:10px;
+
+.shot{
+	width:100px;
+	height:100px;
+	background-color:green;
+	position:absolute;
+	right:35px;
+	top:45%;
+	
+	border-radius: 50px;
 }
+
 #box{
 	margin:0 auto;
 }
@@ -28,4 +50,9 @@ canvas{
 	height:60vw; */
 	background-color:green;
 	border:2px solid black;
+	display:block;
+	margin:0 auto;
+}
+.showScore{
+	color:red;
 }
