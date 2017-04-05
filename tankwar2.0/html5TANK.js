@@ -60,8 +60,9 @@ var mytank=new MyTank(canvas.width/2-TankSize/2,canvas.height/2-TankSize/2,0,5);
 drawTank(mytank);
 var mybullet=null;
 
-//敌方坦克(自适应位置)
+//敌方坦克(自适应位置)----------------
 var enemyTankNumber = 3//敌方坦克数量
+var enemyTankLife = 3;//复活次数
 var TankSpace = (canvasSise - TankSize*enemyTankNumber)/(enemyTankNumber+1);//空地
 var enemyTanks=Array();
 for(var i=0;i<enemyTankNumber;i++){
@@ -77,11 +78,11 @@ var score = 0;
 
 //坦克父类
 function Tank(x,y,d,s){
-	this.x=x;
-	this.y=y;
+	this.initx=this.x=x;
+	this.inity=this.y=y;
 	this.d=d;
 	this.s=s;
-	this.life = 3;//复活次数
+	this.life = enemyTankLife;
 	this.isAlive=true;
 	//移动方法
 	this.moveUp=function(){ //向上
@@ -119,10 +120,10 @@ function MyTank(x,y,d,s){
 			mybullet=new Bullet(this.x+TankBarrel.x,this.y+TankBarrel.y,this.d,15);//暂时#####
 			//mybullet.run();
 			//新增声音
-			document.getElementById("sound").src="bullet.mp3";
+			document.getElementById("sound").src = "bullet.mp3";
 			if(!document.getElementById("sound").autoplay){
 				//alert("进入");
-				document.getElementById("sound").autoplay="autoplay";
+				document.getElementById("sound").autoplay = "autoplay";
 			}
 		}
 		
@@ -238,8 +239,9 @@ function hitTank(bullet,tank){
 		if(bullet.x>tank.x&&bullet.x<tank.x+TankSize&&bullet.y>tank.y&&bullet.y<tank.y+TankSize){
 			bullet.isAlive=false;
 			tank.isAlive=false;
-			tank.life -= 1;
-			score += 10;
+			tank.life -= 1;//命-1
+			score += 10;//计分
+			positionClear(tank);//位置清零
 			showScore.innerHTML = '分数:'+score;
 			document.getElementById("burn").src="burn.mp3";
 			if(!document.getElementById("burn").autoplay){
@@ -265,17 +267,11 @@ function flashAll(){
 	
 	for(var i=0;i<enemyTanks.length;i++){//敌方坦克
 		hitTank(mybullet,enemyTanks[i]);
-		
 		//~~~~~~~~~~~移动~~~~~~~~~~~
-		var r = Math.ceil(Math.random()*10%4);
-		switch(r){
-			case 1:enemyTanks[i].moveUp(); break;//限制在框内放在坦克里了,这样这边事件发出那边不反映就行.
-			case 2:enemyTanks[i].moveDown(); break;
-			case 3:enemyTanks[i].moveLeft(); break;
-			case 4:enemyTanks[i].moveRight(); break;
-			//case 106:enemyTanks[i].shot();break;
-		}
-		//enemyTanksMove();//用函数也可以
+		//var r = Math.ceil(Math.random()*10%4);
+		if(enemyTanks[i].isAlive)
+			enemyTanksMove(enemyTanks[i]);//用函数也可以
+		//console.log(enemyTanks[1].x+enemyTanks[1].y);
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//复活
 		if(enemyTanks[i].isAlive == false && enemyTanks[i].life>0){
@@ -335,19 +331,22 @@ document.getElementsByClassName("shot")[0].addEventListener("click",function(){
 });
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //敌方移动函数(直接写到flashAll()里吧?)
-function enemyTanksMove(){
-	for(var i=0;i<enemyTanks.length;i++){//敌方坦克
-		var r = Math.ceil(Math.random()*10%4);
-		switch(r){
-			case 1:enemyTanks[i].moveUp(); break;//限制在框内放在坦克里了,这样这边事件发出那边不反映就行.
-			case 2:enemyTanks[i].moveDown(); break;
-			case 3:enemyTanks[i].moveLeft(); break;
-			case 4:enemyTanks[i].moveRight(); break;
-			//case 106:enemyTanks[i].shot();break;
-		}
+function enemyTanksMove(tank){
+	var r = Math.ceil(Math.random()*10%4);
+	switch(r){
+		case 1:tank.moveUp(); break;//限制在框内放在坦克里了,这样这边事件发出那边不反映就行.
+		case 2:tank.moveDown(); break;
+		case 3:tank.moveLeft(); break;
+		case 4:tank.moveRight(); break;
+		//case 106:enemyTanks[i].shot();break;
 	}
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//死后位置清零方法:
+function positionClear(tank){
+	tank.x = tank.initx;
+	tank.y = tank.inity;
+}
 //###################################################################
 
 //###################################################################
