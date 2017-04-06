@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <!-- <script src="jquery-1.11.1.js"></script> -->
 <!-- <script src="html5TANK.js"></script> -->
 <link rel="stylesheet" href="html5TANK.css" />
@@ -10,14 +11,20 @@
 <body onkeypress="getComman()">
 <!--画布-->
 <div id="box">
+	<div class="menu">
+		<button class="save">保存</button>
+		<button class="load">读取</button>
+		<button class="pause">暂停</button>
+		<button class="start">开始</button>
+	</div>
 	<canvas id="canvas" ></canvas>
 	
 	<!--文字-->
 	<div><span>awds方向 j射击</span></div>
-	<div class="showScore">分数:</div>
-	<div id="span1"></div>
+	<div class="showScore">分数:0</div>
+	<div class="hint"></div>
 </div>
-<div class="controlbutton">
+<div id="controlbutton">
 	<span id="up"></span>
 	<span id="right"></span>
 	<span id="left"></span>

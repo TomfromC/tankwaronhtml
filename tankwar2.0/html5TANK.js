@@ -16,7 +16,6 @@ box.style.width = 0.9*side_length+"px";
 //canvas.style.width = canvas.style.height = 0.95*side_length+"px";
 var canvasSise = 0.9*side_length;
 canvas.width = canvas.height = canvasSise;
-
 /*******************************************/
 
 /***************自适应坦克和子弹尺寸**************/
@@ -55,8 +54,11 @@ var canMaginH = canvas.height;
 //cxt.fillRect(50,50+5,20,20);//主体(高,宽)
 
 //调用坦克相关~~~~~~~~~~~~~~~~~~~~
+var tankspeed = TankSize * 0.06;//速度也是自适应的不然像素低的屏幕跑得快.
+var bulletspeed = TankSize * 0.5;//子弹速度
+var tankScore = 10;//一辆坦克的分数
 //创建坦克对象
-var mytank=new MyTank(canvas.width/2-TankSize/2,canvas.height/2-TankSize/2,0,5);
+var mytank=new MyTank(canvas.width/2-TankSize/2,canvas.height/2-TankSize/2,0,tankspeed);
 drawTank(mytank);
 var mybullet=null;
 
@@ -66,15 +68,17 @@ var enemyTankLife = 3;//复活次数
 var TankSpace = (canvasSise - TankSize*enemyTankNumber)/(enemyTankNumber+1);//空地
 var enemyTanks=Array();
 for(var i=0;i<enemyTankNumber;i++){
-	enemyTanks[i]=new EnemyTank(TankSpace + i*TankSize + i*TankSpace,0,1,5);
+	enemyTanks[i]=new EnemyTank(TankSpace + i*TankSize + i*TankSpace,0,1,tankspeed);
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var showScore = document.getElementsByClassName("showScore")[0];
 var score = 0;
 //自动
-//function startFlashAll(){
-	setInterval("flashAll()",100);
-//}
+var timer;
+function startFlashAll(){
+    timer = setInterval("flashAll()",100);
+}
+startFlashAll();
 
 //坦克父类
 function Tank(x,y,d,s){
@@ -117,7 +121,7 @@ function MyTank(x,y,d,s){
 		//alert("进入射击方法");
 		if(mybullet==null){
 			drawBullet(mybullet);
-			mybullet=new Bullet(this.x+TankBarrel.x,this.y+TankBarrel.y,this.d,15);//暂时#####
+			mybullet=new Bullet(this.x+TankBarrel.x,this.y+TankBarrel.y,this.d,bulletspeed);
 			//mybullet.run();
 			//新增声音
 			document.getElementById("sound").src = "bullet.mp3";
@@ -240,7 +244,7 @@ function hitTank(bullet,tank){
 			bullet.isAlive=false;
 			tank.isAlive=false;
 			tank.life -= 1;//命-1
-			score += 10;//计分
+			score += tankScore;//计分
 			positionClear(tank);//位置清零
 			showScore.innerHTML = '分数:'+score;
 			document.getElementById("burn").src="burn.mp3";
@@ -260,11 +264,10 @@ function flashAll(){
 		mybullet.run();
 		drawBullet(mybullet);
 		//显示坐标
-		//document.getElementById("span1").innerHTML="x="+mybullet.x+"--y="+mybullet.y;
+		//document.getElementsByClassName("hint")[0].innerHTML="x="+mybullet.x+"--y="+mybullet.y;
 	}else{
 		mybullet=null;
 	}
-	
 	for(var i=0;i<enemyTanks.length;i++){//敌方坦克
 		hitTank(mybullet,enemyTanks[i]);
 		//~~~~~~~~~~~移动~~~~~~~~~~~
@@ -347,6 +350,35 @@ function positionClear(tank){
 	tank.x = tank.initx;
 	tank.y = tank.inity;
 }
+
+//保存函数
+function save(){
+	alert("保存");
+	localStorage.save = JSON.stringify(enemyTanks);
+	localStorage.score = score;
+}
+document.getElementsByClassName("save")[0].addEventListener("click",save);
+//读取
+function load(){
+	var tanksData = JSON.parse(localStorage.save);
+	for(var i=0;i<enemyTanks.length;i++){//敌方坦克
+		enemyTanks[i].x = tanksData[i].x;
+		enemyTanks[i].y = tanksData[i].y;
+		enemyTanks[i].d = tanksData[i].d;
+		enemyTanks[i].life = tanksData[i].life;
+		enemyTanks[i].isAlive = tanksData[i].isAlive;
+	}
+	score = Number(localStorage.score);
+	showScore.innerHTML = '分数:'+score;
+}
+document.getElementsByClassName("load")[0].addEventListener("click",load);
+//暂停
+function pause(){
+	clearInterval(timer);
+}
+document.getElementsByClassName("pause")[0].addEventListener("click",pause);
+//开始
+document.getElementsByClassName("start")[0].addEventListener("click",startFlashAll);
 //###################################################################
 
 //###################################################################
